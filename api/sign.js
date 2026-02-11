@@ -1,3 +1,19 @@
+// 1. 验证Content-Type
+if (req.headers['content-type'] !== 'application/json') {
+  return res.status(400).json({
+    success: false,
+    error: 'Content-Type必须是application/json'
+  });
+}
+
+// 2. 验证请求大小（防止DoS）
+const contentLength = parseInt(req.headers['content-length'] || '0');
+if (contentLength > 1024 * 10) { // 限制10KB
+  return res.status(413).json({
+    success: false,
+    error: '请求体过大'
+  });
+}
 // api/sign.js - 快手签名生成
 const crypto = require('crypto');
 
@@ -49,7 +65,6 @@ module.exports = (req, res) => {
     res.json({
       success: true,
       signature: signature,
-      sign_string: signString, // 调试用
       signed_params: { ...params, sign: signature },
       timestamp: new Date().toISOString(),
       algorithm: 'MD5',
