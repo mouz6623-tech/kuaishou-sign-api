@@ -83,6 +83,3 @@ app.use((req, res) => {
 // ⭐⭐ 关键修改：Vercel Serverless兼容格式 ⭐⭐
 // 方式1：直接导出app（推荐）
 module.exports = app;
-
-// 方式2：或者用函数包装（如果方式1不行）
-// module.exports = (req, res) => app(req, res);
