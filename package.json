@@ -1,10 +1,10 @@
 {
   "name": "kuaishou-sign-api",
-  "version": "1.0.0",
-  "description": "快手签名API服务",
-  "main": "api/kuaishou.js",
+  "version": "2.0.0",
+  "description": "快手签名API服务 - Vercel Serverless版",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node api/kuaishou.js"
+    "start": "node api/index.js"
   },
   "dependencies": {
     "express": "^4.18.2"
