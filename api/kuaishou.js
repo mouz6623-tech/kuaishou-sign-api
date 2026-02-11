@@ -27,6 +27,15 @@ app.get('/', (req, res) => {
   });
 });
 
+// 🆕 测试路由 - 直接返回成功
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: 'API is working!', 
+    time: new Date().toISOString(),
+    note: '如果这个能访问，说明服务器已正常运行'
+  });
+});
+
 // 健康检查
 app.get('/health', (req, res) => {
   res.json({ 
