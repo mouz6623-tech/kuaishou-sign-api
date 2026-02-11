@@ -1,11 +1,3 @@
-文件1：api/kuaishou.js
-
-1. 点击 “Add file” → “Create new file”
-2. 在文件名输入框输入：api/kuaishou.js
-   · 注意：api/ 这部分会自动创建文件夹
-3. 复制下面的代码，粘贴到下方的大编辑框中：
-
-```javascript
 // api/kuaishou.js - 快手签名API服务
 const express = require('express');
 const crypto = require('crypto');
