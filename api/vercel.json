@@ -11,8 +11,5 @@
       "src": "/(.*)",
       "dest": "/api/kuaishou.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
