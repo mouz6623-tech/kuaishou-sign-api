@@ -1,43 +1,60 @@
-// api/index.js - 正确版本
+// api/index.js - Vercel Serverless Function版本
 const express = require('express');
 const crypto = require('crypto');
-const app = express();
 
+// 创建Express应用
+const app = express();
 app.use(express.json());
 
-// ⭐ 处理根路径：当访问 /api 时，在代码里路径是 /
+// 允许跨域
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+// 根路由
 app.get('/', (req, res) => {
   res.json({
     status: 'running',
-    service: '快手签名API',
-    version: '1.0.0',
+    service: '快手签名API服务 - Vercel Serverless版',
+    version: '2.0.0',
     timestamp: new Date().toISOString(),
-    note: '访问 /api/health 检查状态，/api/sign 生成签名'
+    note: '使用Vercel Serverless Functions部署',
+    endpoints: ['/', '/health', '/api/sign']
   });
 });
 
-// ⭐ 健康检查：访问 /api/health，在代码里路径是 /health
+// 测试路由
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: '🎉 API终于工作了！', 
+    timestamp: new Date().toISOString(),
+    status: 'success' 
+  });
+});
+
+// 健康检查
 app.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
+  res.json({ 
+    status: 'healthy', 
     timestamp: new Date().toISOString(),
-    server: 'Vercel Serverless'
+    uptime: process.uptime()
   });
 });
 
-// ⭐ 签名接口：访问 /api/sign，在代码里路径是 /sign
-app.post('/sign', (req, res) => {
+// 签名接口
+app.post('/api/sign', (req, res) => {
   try {
     const { params, app_secret } = req.body;
     
     if (!params || !app_secret) {
       return res.status(400).json({ 
         success: false, 
-        error: '缺少参数' 
+        error: '缺少必要参数' 
       });
     }
     
-    // 签名计算逻辑...
     const signParams = { ...params };
     delete signParams.sign;
     
@@ -54,15 +71,35 @@ app.post('/sign', (req, res) => {
     res.json({
       success: true,
       signature: signature,
-      signed_params: { ...params, sign: signature }
+      signed_params: { ...params, sign: signature },
+      timestamp: new Date().toISOString()
     });
     
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
-// ⭐ 关键导出
-module.exports = (req, res) => {
-  return app(req, res);
-};
+// 404处理
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
+    available_endpoints: ['/', '/health', '/test', '/api/sign'],
+    requested_url: req.originalUrl,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ⭐⭐⭐ Vercel Serverless关键导出 ⭐⭐⭐
+// 方式A：导出app（推荐）
+module.exports = app;
+
+// 方式B：如果A不行，用这个函数包装
+// module.exports = (req, res) => {
+//   return app(req, res);
+// };
